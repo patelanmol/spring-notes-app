@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# H2 Database files (if later persisted)
+*.mv.db
+*.h2.db
