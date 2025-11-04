@@ -1,42 +1,47 @@
 package com.example.notes.controller;
 
 import com.example.notes.model.Note;
+import com.example.notes.service.NoteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping("/notes")
 public class NoteController {
 
-    private final List<Note> notes = new ArrayList<>();
-    private final AtomicLong counter = new AtomicLong();
+    private final NoteService noteService;
+
+    public NoteController(NoteService noteService) {
+        this.noteService = noteService;
+    }
 
     @PostMapping
     public Note createNote(@RequestBody Note note) {
-        note.setId(counter.incrementAndGet());
-        notes.add(note);
-        return note;
+        return noteService.createNote(note);
     }
 
     @GetMapping
     public List<Note> getAllNotes() {
-        return notes;
+        return noteService.getAllNotes();
     }
 
     @GetMapping("/{id}")
-    public Note getNoteById(@PathVariable Long id) {
-        return notes.stream()
-                .filter(n -> n.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public ResponseEntity<Note> getNoteById(@PathVariable Long id) {
+        Note note = noteService.getNoteById(id);
+        return (note != null) ? ResponseEntity.ok(note) : ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Note> updateNote(@PathVariable Long id, @RequestBody Note note) {
+        Note updated = noteService.updateNote(id, note);
+        return (updated != null) ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteNoteById(@PathVariable Long id) {
-        notes.removeIf(n -> n.getId().equals(id));
+    public ResponseEntity<Void> deleteNoteById(@PathVariable Long id) {
+        noteService.deleteNoteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
-

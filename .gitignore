@@ -17,3 +17,4 @@ Thumbs.db
 # H2 Database files (if later persisted)
 *.mv.db
 *.h2.db
+/data/
