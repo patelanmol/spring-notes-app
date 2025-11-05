@@ -1,7 +1,10 @@
 package com.example.notes.controller;
 
+import com.example.notes.dto.CreateNoteRequest;
+import com.example.notes.dto.NoteResponse;
 import com.example.notes.model.Note;
 import com.example.notes.service.NoteService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,13 +21,16 @@ public class NoteController {
     }
 
     @PostMapping
-    public Note createNote(@RequestBody Note note) {
-        return noteService.createNote(note);
+    public NoteResponse createNote(@Valid @RequestBody CreateNoteRequest request) {
+        Note saved = noteService.createNote(request.getContent());
+        return new NoteResponse(saved.getId(), saved.getContent(), saved.getTitle());
     }
 
     @GetMapping
-    public List<Note> getAllNotes() {
-        return noteService.getAllNotes();
+    public List<NoteResponse> getNotes() {
+        return noteService.getAllNotes().stream()
+                .map(n -> new NoteResponse(n.getId(), n.getContent(), n.getTitle()))
+                .toList();
     }
 
     @GetMapping("/{id}")

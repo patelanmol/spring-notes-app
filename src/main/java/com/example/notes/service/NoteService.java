@@ -15,7 +15,9 @@ public class NoteService {
         this.noteRepository = noteRepository;
     }
 
-    public Note createNote(Note note) {
+    public Note createNote(String content) {
+        Note note = new Note();
+        note.setContent(content);
         return noteRepository.save(note);
     }
 
